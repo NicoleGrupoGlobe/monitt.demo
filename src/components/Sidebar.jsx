@@ -116,6 +116,10 @@ export default function Sidebar({ currentView, navigate, theme, setTheme, collap
 
   const isActive = (id) => {
     if (id === 'dashboard') return currentView === 'dashboard'
+    if (id === 'activos')   return currentView === 'activos'   || currentView === 'activo-gen002'
+    if (id === 'alertas')   return currentView === 'alertas'   || currentView === 'alerta-gen002'
+    if (id === 'tecnicos')  return currentView === 'tecnicos'  || currentView === 'tecnico-orden001' || currentView === 'cierre-orden001'
+    if (id === 'config')    return currentView === 'config'
     return false
   }
 
@@ -150,7 +154,7 @@ export default function Sidebar({ currentView, navigate, theme, setTheme, collap
           return (
             <button
               key={id}
-              onClick={() => id === 'dashboard' ? navigate('dashboard') : null}
+              onClick={() => navigate(id)}
               style={s.navBtn(active)}
             >
               <Icon size={16} style={{ flexShrink: 0 }} />
