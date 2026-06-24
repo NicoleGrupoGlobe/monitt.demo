@@ -23,6 +23,7 @@
   --gray:   #6B7280;
   --blue:   #3B82F6;
   --card-glow: 0 0 0 1px var(--border);
+  --logo-ink: #FFFFFF;
 }
 
 /* Light theme — clean & crisp */
@@ -41,6 +42,7 @@
   --green-600:   #345805;
   --green-700:   #1A2C02;
   --card-glow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px var(--border);
+  --logo-ink: #1D401D;
 }
 
 html, body {

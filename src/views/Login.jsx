@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Eye, EyeOff, AlertCircle, ArrowRight, Building2, ShieldCheck } from 'lucide-react'
+import Logo from '../components/Logo'
 
 const ACCOUNTS = [
   {
@@ -103,15 +104,8 @@ export default function Login({ onLogin, theme }) {
 
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-            <div style={{
-              width: '10px', height: '10px', borderRadius: '50%',
-              background: '#30BF12',
-              boxShadow: '0 0 12px rgba(48,191,18,0.6)',
-            }} />
-            <span style={{ fontSize: '22px', fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--text-primary)' }}>
-              monitt
-            </span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+            <Logo height={40} />
           </div>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',

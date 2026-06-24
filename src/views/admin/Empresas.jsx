@@ -1,4 +1,4 @@
-import { Cpu, AlertTriangle, MapPin, Users, ChevronRight, CheckCircle } from 'lucide-react'
+import { Cpu, AlertTriangle, MapPin, Users, ChevronRight, UserRound } from 'lucide-react'
 import { EMPRESAS, TECNICOS } from '../../data/adminData'
 
 function EmpresaCard({ emp, dedicatedCount, showToast }) {
@@ -32,10 +32,18 @@ function EmpresaCard({ emp, dedicatedCount, showToast }) {
         </span>
       </div>
 
-      {/* Location */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <MapPin size={12} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-        <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{emp.location}</span>
+      {/* Contact + address */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <UserRound size={12} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+            <span style={{ color: 'var(--text-muted)' }}>Persona a cargo: </span>{emp.contact}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+          <MapPin size={12} style={{ color: 'var(--text-muted)', flexShrink: 0, marginTop: '2px' }} />
+          <span style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{emp.address}</span>
+        </div>
       </div>
 
       {/* Stats grid */}

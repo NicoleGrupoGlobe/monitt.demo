@@ -1,4 +1,5 @@
 import { LayoutDashboard, Cpu, Bell, Settings, Sun, Moon, ChevronLeft, ChevronRight, Inbox, Users, Building2, ShieldCheck, LogOut } from 'lucide-react'
+import Logo from './Logo'
 
 const NAV_CLIENTE = [
   { id: 'dashboard', label: 'Dashboard',     icon: LayoutDashboard },
@@ -46,7 +47,6 @@ export default function Sidebar({ role, currentView, navigate, theme, setTheme, 
       gap: '8px',
       justifyContent: collapsed ? 'center' : 'flex-start',
     },
-    dot: { width: '8px', height: '8px', borderRadius: '50%', background: '#30BF12', flexShrink: 0 },
     client: { padding: '0 16px 16px', borderBottom: '1px solid var(--border)' },
     nav: { padding: '8px', flex: 1 },
     navBtn: (isActive) => ({
@@ -146,12 +146,7 @@ export default function Sidebar({ role, currentView, navigate, theme, setTheme, 
     <aside style={s.aside}>
       {/* Logo */}
       <div style={s.logo}>
-        <div style={s.dot} />
-        {!collapsed && (
-          <span style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--text-primary)' }}>
-            monitt
-          </span>
-        )}
+        {collapsed ? <Logo iconOnly height={30} /> : <Logo height={24} />}
       </div>
 
       {/* Context: client name or admin panel */}
