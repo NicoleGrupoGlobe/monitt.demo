@@ -69,7 +69,7 @@ const ASSETS = [
   },
 ]
 
-function AssetCard({ asset, showToast }) {
+function AssetCard({ asset, navigate }) {
   return (
     <div style={{
       background: 'var(--bg-surface)',
@@ -129,7 +129,7 @@ function AssetCard({ asset, showToast }) {
           <HealthBar score={asset.score} color={asset.scoreColor} />
         </div>
         <button
-          onClick={() => showToast('Vista de detalle no disponible en esta demo.')}
+          onClick={() => navigate(`activo-${asset.id.toLowerCase().replace('-', '')}`)}
           style={{
             display: 'flex', alignItems: 'center', gap: '4px',
             background: 'none', border: '1px solid var(--border)', borderRadius: '6px',
@@ -157,7 +157,7 @@ function StatPill({ label, value, color }) {
   )
 }
 
-export default function Activos({ showToast }) {
+export default function Activos({ showToast, navigate }) {
   return (
     <div style={{ padding: '32px', maxWidth: '1100px', margin: '0 auto' }}>
       {/* Header */}
@@ -192,7 +192,7 @@ export default function Activos({ showToast }) {
       {/* Asset grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
         {ASSETS.map(asset => (
-          <AssetCard key={asset.id} asset={asset} showToast={showToast} />
+          <AssetCard key={asset.id} asset={asset} navigate={navigate} />
         ))}
       </div>
 

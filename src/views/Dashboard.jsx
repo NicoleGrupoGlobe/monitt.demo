@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { Upload, Filter, Calendar, TrendingUp, TrendingDown, ChevronRight, MoreHorizontal, ArrowUpRight, AlertTriangle } from 'lucide-react'
+import { Upload, Filter, Calendar, TrendingUp, TrendingDown, ChevronRight, ArrowUpRight, AlertTriangle, CheckCircle } from 'lucide-react'
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell,
@@ -25,10 +24,13 @@ const DONUT_DATA = [
 
 /* ── Recent orders ── */
 const ORDERS = [
-  { name: 'Cambio filtro aceite',  asset: 'GEN-002', assigned: 'Luis Ponce',   due: '2026-05-25', completed: '2026-05-25', priority: 'Alta' },
-  { name: 'Revisión rutinaria',    asset: 'GEN-001', assigned: 'Marco Silva',  due: '2026-06-10', completed: '2026-06-10', priority: 'Normal' },
-  { name: 'Inspección anual',      asset: 'GEN-003', assigned: 'Luis Ponce',   due: '2026-07-15', completed: '—',          priority: 'Normal' },
+  { name: 'Cambio filtro aceite', asset: 'GEN-002', assigned: 'Luis Ponce',  due: '25 may 2026', priority: 'Alta' },
+  { name: 'Revisión rutinaria',   asset: 'GEN-001', assigned: 'Marco Silva', due: '10 jun 2026',  priority: 'Normal' },
+  { name: 'Inspección anual',     asset: 'GEN-003', assigned: 'Luis Ponce',  due: '15 jul 2026',  priority: 'Normal' },
 ]
+
+/* ── Flow steps for the demo ── */
+const FLOW_STEPS = ['Diagnóstico', 'Análisis', 'Despacho', 'Intervención', 'Cierre']
 
 /* ── Custom tooltip for area chart ── */
 const ChartTooltip = ({ active, payload, label }) => {
@@ -46,11 +48,11 @@ const ChartTooltip = ({ active, payload, label }) => {
 }
 
 /* ── KPI Card ── */
-function KpiCard({ label, value, change, positive, sub }) {
+function KpiCard({ label, value, change, positive, sub, alert }) {
   return (
     <div style={{
       background: 'var(--bg-surface)',
-      border: '1px solid var(--border)',
+      border: alert ? '1px solid rgba(239,68,68,0.3)' : '1px solid var(--border)',
       borderRadius: '12px',
       padding: '20px 22px',
       flex: 1,
@@ -60,16 +62,16 @@ function KpiCard({ label, value, change, positive, sub }) {
         <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>{label}</p>
         <ArrowUpRight size={14} style={{ color: 'var(--text-muted)' }} />
       </div>
-      <p style={{ fontSize: '36px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 8px', lineHeight: 1, letterSpacing: '-1px' }}>
+      <p style={{ fontSize: '36px', fontWeight: 700, color: alert ? '#EF4444' : 'var(--text-primary)', margin: '0 0 8px', lineHeight: 1, letterSpacing: '-1px' }}>
         {value}
       </p>
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span style={{
           fontSize: '12px', fontWeight: 600,
-          color: positive ? 'var(--green-400)' : 'var(--orange)',
+          color: alert ? '#EF4444' : positive ? 'var(--green-400)' : 'var(--orange)',
           display: 'flex', alignItems: 'center', gap: '2px',
         }}>
-          {positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+          {positive && !alert ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
           {change}
         </span>
         {sub && <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{sub}</span>}
@@ -80,21 +82,13 @@ function KpiCard({ label, value, change, positive, sub }) {
 
 /* ── Main Dashboard ── */
 export default function Dashboard({ navigate, orderCompleted, showToast }) {
-  const [activeTab, setActiveTab] = useState('overview')
-
-  const gen002Status  = orderCompleted ? 'Operativo'        : 'Atención requerida'
-  const gen002Score   = orderCompleted ? 89                  : 58
-  const gen002Color   = orderCompleted ? 'var(--green-400)' : 'var(--orange)'
-  const fleetScore    = orderCompleted ? 89                  : 74
-  const alertCount    = orderCompleted ? 0                   : 1
+  const gen002Score   = orderCompleted ? 89 : 58
+  const gen002Color   = orderCompleted ? '#A8E63D' : '#F97316'
+  const fleetScore    = orderCompleted ? 89 : 74
+  const alertCount    = orderCompleted ? 0  : 1
   const donutData     = orderCompleted
     ? [{ name: 'Operativo', value: 3, color: '#A8E63D' }]
     : DONUT_DATA
-
-  const comingSoon = () => showToast('Vista de detalle no disponible en esta demo.')
-
-  const TABS = ['overview', 'activity', 'manage']
-  const TAB_LABELS = { overview: 'Overview', activity: 'Actividad', manage: 'Gestión' }
 
   return (
     <div style={{ padding: '28px 28px 40px', minHeight: '100%', display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -106,49 +100,30 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
         </p>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.5px' }}>
-            Mi Flota ↓
+            Mi Flota
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button style={btnStyle('ghost')}>
               <Calendar size={14} /> 25 may, 2026
             </button>
-            <button style={btnStyle('ghost')}>
+            <button style={btnStyle('primary')}>
               <Filter size={14} /> Filtrar
             </button>
-            <button style={btnStyle('primary')}>
+            <button style={btnStyle('ghost')}>
               <Upload size={14} /> Exportar
             </button>
           </div>
         </div>
-
-        {/* Tabs */}
-        <div style={{ display: 'flex', gap: '4px', marginTop: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '0' }}>
-          {TABS.map(t => (
-            <button key={t} onClick={() => setActiveTab(t)} style={{
-              padding: '8px 16px',
-              borderRadius: '8px 8px 0 0',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: 500,
-              fontFamily: 'inherit',
-              background: activeTab === t ? 'var(--bg-surface)' : 'transparent',
-              color: activeTab === t ? 'var(--text-primary)' : 'var(--text-muted)',
-              borderBottom: activeTab === t ? '2px solid var(--green-400)' : '2px solid transparent',
-              transition: 'all 150ms',
-            }}>
-              {TAB_LABELS[t]}
-            </button>
-          ))}
-        </div>
+        {/* Divider below header */}
+        <div style={{ borderBottom: '1px solid var(--border)', marginTop: '20px' }} />
       </div>
 
       {/* ── Active alert banner ── */}
       {!orderCompleted && (
         <div style={{
           marginBottom: '16px',
-          background: 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(249,115,22,0.04) 100%)',
-          border: '1px solid rgba(249,115,22,0.4)',
+          background: 'linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.02) 100%)',
+          border: '1px solid rgba(239,68,68,0.35)',
           borderLeft: '4px solid #EF4444',
           borderRadius: '10px',
           padding: '14px 18px',
@@ -164,7 +139,7 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
             <AlertTriangle size={17} style={{ color: '#EF4444' }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
               <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
                 Alerta activa — GEN-002
               </span>
@@ -176,10 +151,39 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
                 ALTA PRIORIDAD
               </span>
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '0 0 10px', lineHeight: 1.5 }}>
               Anomalía detectada por IA en sensor de presión de aceite. Probabilidad de falla:&nbsp;
               <strong style={{ color: '#EF4444' }}>73%</strong> en los próximos 7 días.
             </p>
+            {/* Flow progress */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {FLOW_STEPS.map((step, i) => (
+                <div key={step} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <div style={{
+                      width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0,
+                      background: i === 0 ? '#EF4444' : 'var(--bg-elevated)',
+                      border: i === 0 ? 'none' : '1px solid var(--border)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '9px', fontWeight: 700,
+                      color: i === 0 ? '#fff' : 'var(--text-muted)',
+                    }}>
+                      {i + 1}
+                    </div>
+                    <span style={{
+                      fontSize: '11px',
+                      color: i === 0 ? 'var(--text-primary)' : 'var(--text-muted)',
+                      fontWeight: i === 0 ? 600 : 400,
+                    }}>
+                      {step}
+                    </span>
+                  </div>
+                  {i < FLOW_STEPS.length - 1 && (
+                    <div style={{ width: '16px', height: '1px', background: 'var(--border)' }} />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
             <button
@@ -204,9 +208,16 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
 
           {/* KPI row */}
           <div style={{ display: 'flex', gap: '12px' }}>
-            <KpiCard label="Activos operativos"     value="3/3"            change="+100%"  positive sub="todos en línea" />
-            <KpiCard label="Score de flota"          value={fleetScore}     change={fleetScore >= 80 ? '+2.3%' : '-3.1%'} positive={fleetScore >= 80} sub="vs. mes anterior" />
-            <KpiCard label="Alertas activas"         value={alertCount}     change={alertCount === 0 ? '0 activas' : '+1 nueva'} positive={alertCount === 0} sub={alertCount === 0 ? 'sin incidencias' : 'requiere atención'} />
+            <KpiCard label="Activos operativos" value="3/3"       change="+100%"  positive sub="todos en línea" />
+            <KpiCard label="Score de flota"     value={fleetScore} change={fleetScore >= 80 ? '+2.3%' : '-3.1%'} positive={fleetScore >= 80} sub="vs. mes anterior" />
+            <KpiCard
+              label="Alertas activas"
+              value={alertCount}
+              change={alertCount === 0 ? '0 activas' : '1 requiere acción'}
+              positive={alertCount === 0}
+              sub={alertCount === 0 ? 'sin incidencias' : undefined}
+              alert={alertCount > 0}
+            />
           </div>
 
           {/* Area chart */}
@@ -216,10 +227,15 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
                 <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 2px' }}>Rendimiento de flota</p>
                 <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>Health score vs. alertas (últimos 8 meses)</p>
               </div>
-              <div style={{ display: 'flex', gap: '6px' }}>
-                {['Mensual', 'Semanal'].map(l => (
-                  <button key={l} style={{ ...btnStyle('ghost'), fontSize: '11px', padding: '4px 10px' }}>{l}</button>
-                ))}
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span style={{ width: '10px', height: '2px', background: '#A8E63D', display: 'inline-block', borderRadius: '1px' }} />
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Saludable</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span style={{ width: '10px', height: '2px', background: '#F97316', display: 'inline-block', borderRadius: '1px' }} />
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Alertas</span>
+                </div>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={210}>
@@ -249,14 +265,12 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
               <div>
                 <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 2px' }}>Órdenes de trabajo</p>
-                <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>Historial reciente de intervenciones</p>
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>Últimas intervenciones registradas</p>
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button style={{ ...btnStyle('ghost'), fontSize: '11px', padding: '4px 10px' }}>Diario ↓</button>
-                <button style={{ ...btnStyle('ghost'), fontSize: '11px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  Ver todo <ArrowUpRight size={11} />
-                </button>
-              </div>
+              <button style={{ ...btnStyle('ghost'), fontSize: '11px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                onClick={() => showToast('Vista completa no disponible en esta demo.')}>
+                Ver todo <ArrowUpRight size={11} />
+              </button>
             </div>
             {/* Table head */}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', padding: '10px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
@@ -271,9 +285,10 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
                 padding: '12px 20px',
                 borderBottom: i < ORDERS.length - 1 ? '1px solid var(--border-subtle)' : 'none',
                 alignItems: 'center',
+                background: o.asset === 'GEN-002' && !orderCompleted ? 'rgba(239,68,68,0.03)' : 'transparent',
               }}>
                 <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 500 }}>{o.name}</span>
-                <span style={{ fontSize: '12px', color: 'var(--green-400)', fontWeight: 600 }}>{o.asset}</span>
+                <span style={{ fontSize: '12px', color: o.asset === 'GEN-002' && !orderCompleted ? '#EF4444' : 'var(--green-400)', fontWeight: 600 }}>{o.asset}</span>
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{o.assigned}</span>
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{o.due}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -290,10 +305,10 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
 
           {/* Donut chart — Fleet health */}
           <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', boxShadow: 'var(--card-glow)', textAlign: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-              <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Estado de flota</p>
-              <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><MoreHorizontal size={16} /></button>
-            </div>
+            <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 4px', textAlign: 'left' }}>Estado de flota</p>
+            <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 8px', textAlign: 'left' }}>
+              {orderCompleted ? 'Todos los activos operativos' : '1 activo requiere atención'}
+            </p>
             <div style={{ position: 'relative', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <PieChart width={140} height={140}>
                 <Pie data={donutData} cx={65} cy={65} innerRadius={44} outerRadius={62} paddingAngle={3} dataKey="value" strokeWidth={0}>
@@ -301,9 +316,7 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
                 </Pie>
               </PieChart>
               <div style={{ position: 'absolute', textAlign: 'center' }}>
-                <p style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, lineHeight: 1 }}>
-                  {orderCompleted ? '3' : '3'}
-                </p>
+                <p style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, lineHeight: 1 }}>3</p>
                 <p style={{ fontSize: '10px', color: 'var(--text-muted)', margin: '2px 0 0' }}>Total</p>
               </div>
             </div>
@@ -317,54 +330,55 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
             </div>
           </div>
 
-          {/* Recent activity */}
-          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '18px 20px', boxShadow: 'var(--card-glow)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Actividad reciente</p>
-              <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--green-400)', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'inherit' }}>
-                Ver todo <ArrowUpRight size={11} />
-              </button>
-            </div>
-            {[
-              { label: 'GEN-002 — Filtro reemplazado', sub: 'Orden completada', count: '1/1', color: 'var(--green-400)' },
-              { label: 'Alerta de lubricación cerrada', sub: 'GEN-002',          count: '5 días', color: '#F97316' },
-              { label: 'GEN-001 — Revisión rutinaria', sub: 'Sin hallazgos',    count: '28 días', color: 'var(--green-400)' },
-            ].map(({ label, sub, count, color }) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, flexShrink: 0, marginTop: '4px' }} />
-                  <div>
-                    <p style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-primary)', margin: '0 0 1px' }}>{label}</p>
-                    <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>{sub}</p>
-                  </div>
-                </div>
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}>{count}</span>
-              </div>
-            ))}
-          </div>
-
           {/* Generator health progress */}
           <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '12px', padding: '18px 20px', boxShadow: 'var(--card-glow)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>Health por activo</p>
-              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Hoy ↓</span>
-            </div>
+            <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 4px' }}>Health por activo</p>
+            <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 16px' }}>Índice de salud en tiempo real</p>
             {[
-              { name: 'GEN-001 — Bodega Norte', score: 91, color: '#A8E63D' },
-              { name: 'GEN-002 — Bodega Sur',   score: gen002Score, color: gen002Color.replace('var(--green-400)', '#A8E63D').replace('var(--orange)', '#F97316') },
-              { name: 'GEN-003 — Bodega Sur',   score: 87, color: '#A8E63D' },
-            ].map(({ name, score, color }) => (
-              <div key={name} style={{ marginBottom: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                  <p style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>{name}</p>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color }}>{score}%</span>
+              { name: 'GEN-001', location: 'Bodega Norte', score: 91, color: '#A8E63D' },
+              { name: 'GEN-002', location: 'Bodega Sur',   score: gen002Score, color: gen002Color },
+              { name: 'GEN-003', location: 'Bodega Sur',   score: 87, color: '#A8E63D' },
+            ].map(({ name, location, score, color }) => {
+              const hasAlert = name === 'GEN-002' && !orderCompleted
+              return (
+                <div key={name} style={{ marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                    <div>
+                      <p style={{ fontSize: '12px', fontWeight: 600, color: hasAlert ? '#EF4444' : 'var(--text-primary)', margin: 0 }}>{name}</p>
+                      <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>{location}</p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 700, color }}>{score}%</span>
+                      {hasAlert && (
+                        <p style={{ fontSize: '10px', color: '#EF4444', margin: '1px 0 0', fontWeight: 600 }}>Alerta activa</p>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ height: '5px', background: 'var(--bg-elevated)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div className="health-bar" style={{ height: '100%', width: `${score}%`, background: color, borderRadius: '3px' }} />
+                  </div>
                 </div>
-                <div style={{ height: '5px', background: 'var(--bg-elevated)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div className="health-bar" style={{ height: '100%', width: `${score}%`, background: color, borderRadius: '3px' }} />
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
+
+          {/* Post-completion state */}
+          {orderCompleted && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(168,230,61,0.08) 0%, rgba(168,230,61,0.02) 100%)',
+              border: '1px solid rgba(168,230,61,0.25)',
+              borderRadius: '12px', padding: '16px',
+              display: 'flex', alignItems: 'flex-start', gap: '10px',
+            }}>
+              <CheckCircle size={15} style={{ color: 'var(--green-400)', flexShrink: 0, marginTop: '1px' }} />
+              <div>
+                <p style={{ fontSize: '12px', fontWeight: 600, color: 'var(--green-400)', margin: '0 0 3px' }}>Flota al 100%</p>
+                <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
+                  GEN-002 restaurado. Orden ORD-001 completada por Luis Ponce el 25 may 2026.
+                </p>
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

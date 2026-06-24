@@ -190,9 +190,7 @@ export default function Configuracion({ showToast }) {
 
       {/* Users */}
       <SectionCard title="Usuarios y acceso" description="Personas con acceso a la plataforma" icon={Users}>
-        <UserRow name="Rob Fuentes"     email="rfuentes@transandina.cl"  role="Administrador" initials="RF" />
-        <UserRow name="María González"  email="mgonzalez@transandina.cl" role="Supervisor"    initials="MG" />
-        <UserRow name="Carlos Méndez"   email="cmendez@transandina.cl"   role="Técnico"       initials="CM" last />
+        <UserRow name="Rob Fuentes" email="rfuentes@transandina.cl" role="Supervisor" initials="RF" last />
         <button
           onClick={() => showToast('Función no disponible en esta demo.')}
           style={{

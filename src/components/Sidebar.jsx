@@ -1,10 +1,9 @@
-import { LayoutDashboard, Cpu, Bell, Wrench, Settings, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Cpu, Bell, Settings, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'activos',   label: 'Activos',   icon: Cpu },
-  { id: 'alertas',   label: 'Alertas',   icon: Bell },
-  { id: 'tecnicos',  label: 'Técnicos',  icon: Wrench },
+  { id: 'dashboard', label: 'Dashboard',     icon: LayoutDashboard },
+  { id: 'activos',   label: 'Activos',       icon: Cpu },
+  { id: 'alertas',   label: 'Alertas',       icon: Bell },
   { id: 'config',    label: 'Configuración', icon: Settings },
 ]
 
@@ -116,7 +115,7 @@ export default function Sidebar({ currentView, navigate, theme, setTheme, collap
 
   const isActive = (id) => {
     if (id === 'dashboard') return currentView === 'dashboard'
-    if (id === 'activos')   return currentView === 'activos'   || currentView === 'activo-gen002'
+    if (id === 'activos')   return currentView === 'activos' || currentView === 'activo-gen001' || currentView === 'activo-gen002' || currentView === 'activo-gen003'
     if (id === 'alertas')   return currentView === 'alertas'   || currentView === 'alerta-gen002'
     if (id === 'tecnicos')  return currentView === 'tecnicos'  || currentView === 'tecnico-orden001' || currentView === 'cierre-orden001'
     if (id === 'config')    return currentView === 'config'

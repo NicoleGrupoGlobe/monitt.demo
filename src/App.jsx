@@ -7,6 +7,7 @@ import AlertDispatch from './views/AlertDispatch'
 import TechnicianView from './views/TechnicianView'
 import CloseOut from './views/CloseOut'
 import Activos from './views/Activos'
+import ActivoDetalle from './views/ActivoDetalle'
 import Alertas from './views/Alertas'
 import Tecnicos from './views/Tecnicos'
 import Configuracion from './views/Configuracion'
@@ -45,7 +46,9 @@ function App() {
       case 'alerta-gen002':   return <AlertDispatch navigate={navigate} />
       case 'tecnico-orden001':return <TechnicianView navigate={navigate} />
       case 'cierre-orden001': return <CloseOut navigate={navigate} completeOrder={completeOrder} />
-      case 'activos':         return <Activos showToast={showToast} />
+      case 'activos':         return <Activos showToast={showToast} navigate={navigate} />
+      case 'activo-gen001':   return <ActivoDetalle navigate={navigate} assetId="GEN-001" />
+      case 'activo-gen003':   return <ActivoDetalle navigate={navigate} assetId="GEN-003" />
       case 'alertas':         return <Alertas showToast={showToast} navigate={navigate} />
       case 'tecnicos':        return <Tecnicos showToast={showToast} />
       case 'config':          return <Configuracion showToast={showToast} />
