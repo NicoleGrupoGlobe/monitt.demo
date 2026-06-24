@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Upload, Filter, Calendar, TrendingUp, TrendingDown, ChevronRight, Sparkles, MoreHorizontal, ArrowUpRight } from 'lucide-react'
+import { Upload, Filter, Calendar, TrendingUp, TrendingDown, ChevronRight, MoreHorizontal, ArrowUpRight, AlertTriangle } from 'lucide-react'
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell,
@@ -143,6 +143,59 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
         </div>
       </div>
 
+      {/* ── Active alert banner ── */}
+      {!orderCompleted && (
+        <div style={{
+          marginBottom: '16px',
+          background: 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(249,115,22,0.04) 100%)',
+          border: '1px solid rgba(249,115,22,0.4)',
+          borderLeft: '4px solid #EF4444',
+          borderRadius: '10px',
+          padding: '14px 18px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+        }}>
+          <div style={{
+            width: '34px', height: '34px', borderRadius: '8px',
+            background: 'rgba(239,68,68,0.15)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <AlertTriangle size={17} style={{ color: '#EF4444' }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                Alerta activa — GEN-002
+              </span>
+              <span style={{
+                fontSize: '10px', fontWeight: 700, color: '#EF4444',
+                background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
+                borderRadius: '4px', padding: '1px 6px', letterSpacing: '0.3px',
+              }}>
+                ALTA PRIORIDAD
+              </span>
+            </div>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
+              Anomalía detectada por IA en sensor de presión de aceite. Probabilidad de falla:&nbsp;
+              <strong style={{ color: '#EF4444' }}>73%</strong> en los próximos 7 días.
+            </p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            <button
+              onClick={() => navigate('activo-gen002')}
+              style={{
+                background: '#EF4444', border: 'none', borderRadius: '7px',
+                padding: '8px 14px', fontSize: '12px', fontWeight: 600, color: '#fff',
+                cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '5px',
+              }}
+            >
+              Ver análisis <ChevronRight size={12} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── Body: left+center | right panel ── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: '16px', flex: 1 }}>
 
@@ -224,8 +277,8 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{o.assigned}</span>
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{o.due}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: o.priority === 'Alta' ? '#F97316' : 'var(--green-400)', flexShrink: 0 }} />
-                  <span style={{ fontSize: '12px', color: o.priority === 'Alta' ? '#F97316' : 'var(--green-400)' }}>{o.priority}</span>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: o.priority === 'Alta' ? '#EF4444' : 'var(--green-400)', flexShrink: 0 }} />
+                  <span style={{ fontSize: '12px', color: o.priority === 'Alta' ? '#EF4444' : 'var(--green-400)' }}>{o.priority}</span>
                 </span>
               </div>
             ))}
@@ -313,30 +366,6 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
             ))}
           </div>
 
-          {/* AI insight */}
-          {!orderCompleted && (
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(168,230,61,0.08) 0%, rgba(168,230,61,0.02) 100%)',
-              border: '1px solid rgba(168,230,61,0.2)',
-              borderRadius: '12px', padding: '16px',
-            }}>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                <Sparkles size={15} style={{ color: 'var(--green-400)', flexShrink: 0, marginTop: '1px' }} />
-                <div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-primary)', margin: '0 0 8px', lineHeight: 1.6 }}>
-                    GEN-002 tiene una anomalía activa. Probabilidad de falla: <strong style={{ color: '#F97316' }}>73%</strong> en 7 días.
-                  </p>
-                  <button onClick={() => navigate('activo-gen002')} style={{
-                    background: 'var(--green-400)', border: 'none', borderRadius: '6px',
-                    padding: '6px 12px', fontSize: '11px', fontWeight: 600, color: '#111',
-                    cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '4px',
-                  }}>
-                    Ver análisis <ChevronRight size={11} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

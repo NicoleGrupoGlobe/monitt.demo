@@ -119,7 +119,7 @@ export default function AlertDispatch({ navigate }) {
         ].map(([k, v]) => (
           <div key={k}>
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '0 0 2px' }}>{k}</p>
-            <p style={{ fontSize: '13px', fontWeight: 500, color: k === 'Urgencia' ? '#F59E0B' : 'var(--text-primary)', margin: 0 }}>{v}</p>
+            <p style={{ fontSize: '13px', fontWeight: 500, color: k === 'Urgencia' ? '#EF4444' : 'var(--text-primary)', margin: 0 }}>{v}</p>
           </div>
         ))}
       </div>
@@ -172,17 +172,27 @@ export default function AlertDispatch({ navigate }) {
           <div>
             <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '0 0 8px' }}>Prioridad</p>
             <div style={{ display: 'flex', gap: '6px' }}>
-              {['baja', 'normal', 'alta'].map(p => (
-                <button key={p} onClick={() => setPriority(p)} style={{
-                  padding: '5px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 500,
-                  cursor: 'pointer', fontFamily: 'inherit', textTransform: 'capitalize',
-                  border: priority === p ? '1px solid var(--green-500)' : '1px solid var(--border)',
-                  background: priority === p ? 'rgba(48,191,18,0.1)' : 'transparent',
-                  color: priority === p ? 'var(--green-500)' : 'var(--text-secondary)',
-                }}>
-                  {p.charAt(0).toUpperCase() + p.slice(1)}
-                </button>
-              ))}
+              {['baja', 'normal', 'alta'].map(p => {
+                const isSelected = priority === p
+                const isAlta = p === 'alta'
+                return (
+                  <button key={p} onClick={() => setPriority(p)} style={{
+                    padding: '5px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 500,
+                    cursor: 'pointer', fontFamily: 'inherit', textTransform: 'capitalize',
+                    border: isSelected
+                      ? `1px solid ${isAlta ? '#EF4444' : 'var(--green-500)'}`
+                      : '1px solid var(--border)',
+                    background: isSelected
+                      ? (isAlta ? 'rgba(239,68,68,0.1)' : 'rgba(48,191,18,0.1)')
+                      : 'transparent',
+                    color: isSelected
+                      ? (isAlta ? '#EF4444' : 'var(--green-500)')
+                      : 'var(--text-secondary)',
+                  }}>
+                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                  </button>
+                )
+              })}
             </div>
           </div>
           <div>

@@ -10,9 +10,11 @@ import Activos from './views/Activos'
 import Alertas from './views/Alertas'
 import Tecnicos from './views/Tecnicos'
 import Configuracion from './views/Configuracion'
+import Login from './views/Login'
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('monitt-theme') || 'dark')
+  const [authenticated, setAuthenticated] = useState(false)
   const [currentView, setCurrentView] = useState('dashboard')
   const [orderCompleted, setOrderCompleted] = useState(false)
   const [toast, setToast] = useState(null)
@@ -49,6 +51,10 @@ function App() {
       case 'config':          return <Configuracion showToast={showToast} />
       default:                return <Dashboard navigate={navigate} orderCompleted={orderCompleted} showToast={showToast} />
     }
+  }
+
+  if (!authenticated) {
+    return <Login onLogin={() => setAuthenticated(true)} theme={theme} />
   }
 
   return (
