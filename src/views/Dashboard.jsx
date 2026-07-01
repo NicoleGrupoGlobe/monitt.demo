@@ -3,6 +3,7 @@ import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell,
 } from 'recharts'
+import FleetMap from '../components/FleetMap'
 
 /* ── Sensor performance data (last 8 months) ── */
 const PERF_DATA = [
@@ -81,7 +82,7 @@ function KpiCard({ label, value, change, positive, sub, alert }) {
 }
 
 /* ── Main Dashboard ── */
-export default function Dashboard({ navigate, orderCompleted, showToast }) {
+export default function Dashboard({ navigate, orderCompleted, showToast, theme }) {
   const gen002Score   = orderCompleted ? 89 : 58
   const gen002Color   = orderCompleted ? '#A8E63D' : '#F97316'
   const fleetScore    = orderCompleted ? 89 : 74
@@ -199,6 +200,11 @@ export default function Dashboard({ navigate, orderCompleted, showToast }) {
           </div>
         </div>
       )}
+
+      {/* ── Fleet locations map ── */}
+      <div style={{ marginBottom: '16px' }}>
+        <FleetMap navigate={navigate} theme={theme} />
+      </div>
 
       {/* ── Body: left+center | right panel ── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: '16px', flex: 1 }}>

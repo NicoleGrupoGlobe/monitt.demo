@@ -75,7 +75,7 @@ function App() {
   const renderView = () => {
     switch (currentView) {
       // Client profile
-      case 'dashboard':       return <Dashboard navigate={navigate} orderCompleted={orderCompleted} showToast={showToast} />
+      case 'dashboard':       return <Dashboard navigate={navigate} orderCompleted={orderCompleted} showToast={showToast} theme={theme} />
       case 'activo-gen002':   return <AssetDetail navigate={navigate} />
       case 'alerta-gen002':   return <AlertDispatch navigate={navigate} />
       case 'tecnico-orden001':return <TechnicianView navigate={navigate} />
@@ -94,7 +94,7 @@ function App() {
 
       default:                return role === 'admin'
         ? <AdminDashboard solicitudes={solicitudes} navigate={navigate} />
-        : <Dashboard navigate={navigate} orderCompleted={orderCompleted} showToast={showToast} />
+        : <Dashboard navigate={navigate} orderCompleted={orderCompleted} showToast={showToast} theme={theme} />
     }
   }
 
