@@ -64,6 +64,12 @@ html, body {
 }
 .page-fade { animation: fadeIn 200ms ease-out forwards; }
 
+/* Drawer slide-in from the right */
+@keyframes drawerIn {
+  from { transform: translateX(28px); opacity: 0.5; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
 /* Status pulse for critical */
 @keyframes statusPulse {
   0%, 100% { opacity: 1; }

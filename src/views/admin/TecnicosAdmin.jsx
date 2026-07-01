@@ -1,8 +1,69 @@
 import { useState } from 'react'
-import { Wrench, MapPin, Phone, Star, Briefcase, ChevronRight } from 'lucide-react'
+import { Wrench, MapPin, Phone, Star, Briefcase, ChevronRight, Mail, Clock, Award, CheckCircle, Calendar, TrendingUp } from 'lucide-react'
 import { TECNICOS, PROVEEDORES, TEC_STATUS, proveedorById } from '../../data/adminData'
+import Drawer from '../../components/Drawer'
 
-function TechCard({ tech, showToast }) {
+// Extended (dummy) profile data per technician — powers the full-profile modal.
+const PROFILES = {
+  'TEC-001': {
+    email: 'lponce@genservice.cl', since: 2019, total: 512, onTime: '98%', response: '1.8 h',
+    history: [
+      { date: '25 may 2026', action: 'Diagnóstico de sistema de lubricación', ref: 'TransAndina · GEN-002' },
+      { date: '12 may 2026', action: 'Mantención preventiva 500 h',           ref: 'TransAndina · GEN-001' },
+      { date: '28 abr 2026', action: 'Cambio de inyectores',                   ref: 'A&R Freight · GEN-014' },
+    ],
+  },
+  'TEC-002': {
+    email: 'cmendez@tecnodiesel.cl', since: 2020, total: 421, onTime: '96%', response: '2.1 h',
+    history: [
+      { date: '20 may 2026', action: 'Revisión de tablero de transferencia', ref: 'Inversiones Trece · GEN-021' },
+      { date: '06 may 2026', action: 'Prueba de generación bajo carga',       ref: 'TransAndina · GEN-003' },
+      { date: '22 abr 2026', action: 'Reemplazo de batería de arranque',      ref: 'Plaza Condell · GEN-030' },
+    ],
+  },
+  'TEC-003': {
+    email: 'sparedes@genservice.cl', since: 2017, total: 684, onTime: '99%', response: '1.5 h',
+    history: [
+      { date: '24 may 2026', action: 'Inspección de alta carga',       ref: 'A&R Freight · GEN-014' },
+      { date: '15 may 2026', action: 'Cambio de filtros y aceite',     ref: 'A&R Freight · GEN-015' },
+      { date: '02 may 2026', action: 'Puesta en marcha de respaldo',   ref: 'Jardín del Roble · GEN-041' },
+    ],
+  },
+  'TEC-004': {
+    email: 'mdiaz@andespower.cl', since: 2018, total: 559, onTime: '97%', response: '1.9 h',
+    history: [
+      { date: '24 may 2026', action: 'Intervención por desgaste (en curso)',  ref: 'Inversiones Trece · GEN-021' },
+      { date: '10 may 2026', action: 'Mantención de respaldo crítico',        ref: 'Inversiones Trece · GEN-022' },
+      { date: '25 abr 2026', action: 'Prueba de transferencia automática',    ref: 'Plaza Condell · GEN-031' },
+    ],
+  },
+  'TEC-005': {
+    email: 'arojas@tecnodiesel.cl', since: 2022, total: 214, onTime: '94%', response: '2.6 h',
+    history: [
+      { date: '24 may 2026', action: 'Mantención preventiva recomendada por IA', ref: 'Jardín del Roble · GEN-007' },
+      { date: '09 may 2026', action: 'Diagnóstico general',                      ref: 'Plaza Condell · GEN-030' },
+      { date: '18 abr 2026', action: 'Cambio de filtros',                        ref: 'A&R Freight · GEN-016' },
+    ],
+  },
+  'TEC-006': {
+    email: 'vsoto@andespower.cl', since: 2021, total: 298, onTime: '96%', response: '2.2 h',
+    history: [
+      { date: '19 may 2026', action: 'Calibración de telemetría',      ref: 'Inversiones Trece · GEN-021' },
+      { date: '03 may 2026', action: 'Actualización de controlador',   ref: 'TransAndina · GEN-001' },
+      { date: '20 abr 2026', action: 'Configuración de monitoreo',     ref: 'Plaza Condell · GEN-031' },
+    ],
+  },
+  'TEC-007': {
+    email: 'psalas@genservice.cl', since: 2023, total: 158, onTime: '93%', response: '2.9 h',
+    history: [
+      { date: '14 may 2026', action: 'Cambio de refrigerante',   ref: 'A&R Freight · GEN-015' },
+      { date: '30 abr 2026', action: 'Limpieza de filtros',      ref: 'Jardín del Roble · GEN-041' },
+      { date: '12 abr 2026', action: 'Reposición de combustible', ref: 'TransAndina · GEN-003' },
+    ],
+  },
+}
+
+function TechCard({ tech, onOpenProfile }) {
   const st = TEC_STATUS[tech.status]
   const prov = proveedorById(tech.provider)
 
@@ -95,7 +156,7 @@ function TechCard({ tech, showToast }) {
       </div>
 
       <button
-        onClick={() => showToast('Perfil completo no disponible en esta demo.')}
+        onClick={() => onOpenProfile(tech)}
         style={{
           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
           background: 'none', border: '1px solid var(--border)', borderRadius: '6px',
@@ -109,8 +170,134 @@ function TechCard({ tech, showToast }) {
   )
 }
 
+function ProfileStat({ icon: Icon, label, value, accent }) {
+  return (
+    <div style={{ padding: '12px', background: 'var(--bg-elevated)', borderRadius: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '6px' }}>
+        <Icon size={12} style={{ color: 'var(--text-muted)' }} />
+        <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>{label}</span>
+      </div>
+      <p style={{ fontSize: '19px', fontWeight: 700, color: accent || 'var(--text-primary)', margin: 0, lineHeight: 1 }}>{value}</p>
+    </div>
+  )
+}
+
+function ContactRow({ icon: Icon, value }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <Icon size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+      <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{value}</span>
+    </div>
+  )
+}
+
+function TechProfileModal({ tech, onClose }) {
+  const st = TEC_STATUS[tech.status]
+  const prov = proveedorById(tech.provider)
+  const p = PROFILES[tech.id] || {}
+
+  return (
+    <Drawer title="Perfil del técnico" onClose={onClose} width={520}>
+        {/* Header */}
+        <div style={{ display: 'flex', gap: '14px', alignItems: 'center', marginBottom: '18px' }}>
+          <div style={{
+            width: '56px', height: '56px', borderRadius: '50%',
+            background: 'var(--green-700)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '20px', fontWeight: 700, color: 'var(--green-400)', flexShrink: 0,
+          }}>
+            {tech.initials}
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <p style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 3px', letterSpacing: '-0.4px' }}>{tech.name}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{tech.role}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: st.color }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: st.color }} />
+                {st.label}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Provider + tenure */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap',
+          background: `${prov.accent}14`, border: `1px solid ${prov.accent}40`,
+          borderRadius: '8px', padding: '10px 12px', marginBottom: '18px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Briefcase size={14} style={{ color: prov.accent, flexShrink: 0 }} />
+            <span style={{ fontSize: '13px', fontWeight: 500, color: prov.accent }}>Proveedor · {prov.name}</span>
+          </div>
+          {p.since && <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Contratado desde {p.since}</span>}
+        </div>
+
+        {/* Contact */}
+        <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.4px', margin: '0 0 10px' }}>Contacto</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '9px', marginBottom: '20px' }}>
+          {p.email && <ContactRow icon={Mail} value={p.email} />}
+          <ContactRow icon={Phone} value={tech.phone} />
+          <ContactRow icon={MapPin} value={tech.zone} />
+        </div>
+
+        {/* Performance stats */}
+        <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.4px', margin: '0 0 10px' }}>Desempeño</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '20px' }}>
+          <ProfileStat icon={Star}        label="Rating"        value={tech.rating}         accent="#F59E0B" />
+          <ProfileStat icon={Wrench}      label="Activas"       value={tech.activeOrders} />
+          <ProfileStat icon={Calendar}    label="Este mes"      value={tech.completedMonth} />
+          <ProfileStat icon={CheckCircle} label="Total"         value={p.total ?? '—'} />
+          <ProfileStat icon={TrendingUp}  label="Cumplimiento"  value={p.onTime ?? '—'}   accent="#30BF12" />
+          <ProfileStat icon={Clock}       label="Resp. prom."   value={p.response ?? '—'} />
+        </div>
+
+        {/* Specialty */}
+        <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.4px', margin: '0 0 8px' }}>Especialidad</p>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', marginBottom: '18px' }}>
+          <Wrench size={13} style={{ color: 'var(--text-muted)', marginTop: '2px', flexShrink: 0 }} />
+          <span style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{tech.specialty}</span>
+        </div>
+
+        {/* Certifications */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '0 0 8px' }}>
+          <Award size={13} style={{ color: 'var(--text-muted)' }} />
+          <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.4px', margin: 0 }}>Certificaciones</p>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
+          {tech.certs.map(cert => (
+            <span key={cert} style={{
+              fontSize: '12px', padding: '4px 10px',
+              background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+              borderRadius: '5px', color: 'var(--text-secondary)',
+            }}>{cert}</span>
+          ))}
+        </div>
+
+        {/* Work history */}
+        {p.history && (
+          <>
+            <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.4px', margin: '0 0 10px' }}>Historial reciente</p>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {p.history.map((h, i) => (
+                <div key={i} style={{ display: 'flex', gap: '12px', padding: '10px 0', borderBottom: i < p.history.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green-500)', flexShrink: 0, marginTop: '6px' }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: '13px', color: 'var(--text-primary)', margin: '0 0 2px' }}>{h.action}</p>
+                    <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>{h.ref}</p>
+                  </div>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' }}>{h.date}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+    </Drawer>
+  )
+}
+
 export default function TecnicosAdmin({ showToast }) {
   const [providerFilter, setProviderFilter] = useState('all')
+  const [profileTech, setProfileTech] = useState(null)
 
   const filtered = TECNICOS.filter(t => providerFilter === 'all' || t.provider === providerFilter)
 
@@ -170,7 +357,7 @@ export default function TecnicosAdmin({ showToast }) {
       {/* Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
         {filtered.map(tech => (
-          <TechCard key={tech.id} tech={tech} showToast={showToast} />
+          <TechCard key={tech.id} tech={tech} onOpenProfile={setProfileTech} />
         ))}
       </div>
 
@@ -179,6 +366,8 @@ export default function TecnicosAdmin({ showToast }) {
           No hay técnicos en esta categoría.
         </div>
       )}
+
+      {profileTech && <TechProfileModal tech={profileTech} onClose={() => setProfileTech(null)} />}
     </div>
   )
 }

@@ -1,0 +1,21 @@
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - img "Monitt.io" [ref=e7]
+    - generic [ref=e23]: Plataforma de monitoreo predictivo
+  - generic [ref=e24]:
+    - heading "Bienvenido" [level=1] [ref=e25]
+    - paragraph [ref=e26]: Ingresa tus credenciales para continuar
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]: Usuario
+        - textbox "correo@empresa.cl" [ref=e30]
+      - generic [ref=e31]:
+        - generic [ref=e32]: Contraseña
+        - generic [ref=e33]:
+          - textbox "••••••••" [ref=e34]
+          - button [ref=e35] [cursor=pointer]:
+            - img [ref=e36]
+      - button "Ingresar" [ref=e39] [cursor=pointer]:
+        - text: Ingresar
+        - img [ref=e40]
+  - paragraph [ref=e42]: monitt.io · Plataforma de monitoreo predictivo v0.1 demo
