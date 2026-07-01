@@ -11,6 +11,7 @@ import ActivoDetalle from './views/ActivoDetalle'
 import Alertas from './views/Alertas'
 import Configuracion from './views/Configuracion'
 import Login from './views/Login'
+import HelpButton from './components/HelpButton'
 import AdminDashboard from './views/admin/AdminDashboard'
 import Solicitudes from './views/admin/Solicitudes'
 import TecnicosAdmin from './views/admin/TecnicosAdmin'
@@ -120,6 +121,7 @@ function App() {
         </div>
       </main>
       {toast && <Toast message={toast} />}
+      {role === 'cliente' && <HelpButton />}
     </div>
   )
 }

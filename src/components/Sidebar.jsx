@@ -218,10 +218,10 @@ export default function Sidebar({ role, currentView, navigate, theme, setTheme, 
 
         {!collapsed && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', marginTop: '4px' }}>
-            <div style={s.avatar}>{isAdmin ? 'MO' : 'RF'}</div>
+            <div style={s.avatar}>{isAdmin ? 'RF' : 'CB'}</div>
             <div>
               <p style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
-                {isAdmin ? 'Monitt.io' : 'Rob Fuentes'}
+                {isAdmin ? 'Rob Fisher' : 'Cristián Bravo'}
               </p>
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>
                 {isAdmin ? 'Super admin' : 'Supervisor'}
